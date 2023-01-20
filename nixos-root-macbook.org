@@ -274,7 +274,6 @@ environment.gnome.excludePackages = (with pkgs; [
 <<doas>>
 #+END_SRC
 
-
 ** hardware-configuration.nix
 *** hardware-configuration.nix config
 
