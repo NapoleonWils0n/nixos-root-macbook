@@ -104,6 +104,9 @@ emacs --batch -l org --eval '(org-babel-tangle-file "~/git/nixos/nixos-root-macb
     layout = "gb";
     xkbVariant = "mac";
 
+    # intel
+    videoDrivers = [ "intel" ];
+
     # exclude xterm
     excludePackages = [ pkgs.xterm ];
 

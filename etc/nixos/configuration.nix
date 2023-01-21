@@ -75,6 +75,9 @@
     layout = "gb";
     xkbVariant = "mac";
 
+    # intel
+    videoDrivers = [ "intel" ];
+
     # exclude xterm
     excludePackages = [ pkgs.xterm ];
 
