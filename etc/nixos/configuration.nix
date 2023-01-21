@@ -85,6 +85,10 @@
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
     };
+    # gnome
+    gnome = {
+      tracker-miners.enable = false;
+    };
     # disable cups printing
     printing.enable = false;
     # avahi
