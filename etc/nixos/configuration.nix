@@ -6,6 +6,13 @@
       ./hardware-configuration.nix
     ];
 
+  # system auto upgrade
+  system.autoUpgrade = {
+      enable = true;
+      dates = "daily";
+      allowReboot = true;
+  };
+
   # nix gc
   nix = {
     settings.auto-optimise-store = true;
