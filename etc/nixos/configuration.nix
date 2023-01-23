@@ -10,7 +10,7 @@
   system.autoUpgrade = {
       enable = true;
       dates = "daily";
-      allowReboot = true;
+      allowReboot = false;
   };
 
   # nix gc
