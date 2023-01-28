@@ -211,20 +211,11 @@ environment.gnome.excludePackages = (with pkgs; [
     ];
   };
 
-  # zsh
+  # programs
   programs = {
-  zsh = {
-    enable = true;
-    enableCompletion = true;
-    syntaxHighlighting.enable = true;
-    };  
-  dconf.enable = true;
-  ssh.startAgent = true;
+    dconf.enable = true;
+    ssh.startAgent = true;
   };
-
-  # zsh
-  users.defaultUserShell = pkgs.zsh;
-  environment.pathsToLink = [ "/share/zsh" ];
 
   # powermanagement
   powerManagement.enable = true;
