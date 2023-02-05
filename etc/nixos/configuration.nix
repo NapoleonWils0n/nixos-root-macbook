@@ -217,6 +217,10 @@ environment.gnome.excludePackages = (with pkgs; [
     ssh.startAgent = true;
   };
 
+  # zsh
+  users.users.djwilcox.shell = pkgs.zsh;
+  environment.pathsToLink = [ "/share/zsh" ];
+
   # powermanagement
   powerManagement.enable = true;
 
