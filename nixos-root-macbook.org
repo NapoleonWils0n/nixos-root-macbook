@@ -242,6 +242,11 @@ environment.gnome.excludePackages = (with pkgs; [
 
   # programs
   programs = {
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      syntaxHighlighting.enable = true;
+      }; 
     dconf.enable = true;
     ssh.startAgent = true;
   };
@@ -249,6 +254,7 @@ environment.gnome.excludePackages = (with pkgs; [
   # zsh
   users.users.djwilcox.shell = pkgs.zsh;
   environment.pathsToLink = [ "/share/zsh" ];
+  environment.shells = with pkgs; [ zsh ];
 
   # powermanagement
   powerManagement.enable = true;
