@@ -213,6 +213,11 @@ environment.gnome.excludePackages = (with pkgs; [
 
   # programs
   programs = {
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      syntaxHighlighting.enable = true;
+      }; 
     dconf.enable = true;
     ssh.startAgent = true;
   };
@@ -220,6 +225,7 @@ environment.gnome.excludePackages = (with pkgs; [
   # zsh
   users.users.djwilcox.shell = pkgs.zsh;
   environment.pathsToLink = [ "/share/zsh" ];
+  environment.shells = with pkgs; [ zsh ];
 
   # powermanagement
   powerManagement.enable = true;
@@ -242,7 +248,7 @@ environment.gnome.excludePackages = (with pkgs; [
     enable = true;
     extraConfig = ''
       # allow user
-      permit keepenv djwilcox
+      permit keepenv setenv { PATH } djwilcox
       
       # mount and unmount drives 
       permit nopass djwilcox cmd mount 

@@ -277,7 +277,7 @@ environment.gnome.excludePackages = (with pkgs; [
     enable = true;
     extraConfig = ''
       # allow user
-      permit keepenv djwilcox
+      permit keepenv setenv { PATH } djwilcox
       
       # mount and unmount drives 
       permit nopass djwilcox cmd mount 
