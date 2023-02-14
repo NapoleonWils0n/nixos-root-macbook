@@ -193,6 +193,9 @@ emacs --batch -l org --eval '(org-babel-tangle-file "~/git/nixos/nixos-root-macb
       };
   };
 
+  # disable the transmission systemd service
+  systemd.services.transmission.wantedBy = pkgs.lib.mkForce [ ];
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 

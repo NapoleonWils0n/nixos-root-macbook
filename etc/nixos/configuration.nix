@@ -164,6 +164,9 @@
       };
   };
 
+  # disable the transmission systemd service
+  systemd.services.transmission.wantedBy = pkgs.lib.mkForce [ ];
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
