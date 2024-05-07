@@ -60,20 +60,38 @@
     LC_TIME = "en_GB.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-
-  # Configure keymap in X11
-  services.xserver = {
+  # services
+  services = {
+    xserver = {
+    # Enable the X11 windowing system.
+    enable = true;
+    layout = "gb";
     xkbVariant = "mac";
     xkbOptions = "custom:alt_win_ctrl";
-    layout = "gb";
+
+    # intel 
     videoDrivers = [ "intel" ];
- };
+
+    # exclude xterm
+    excludePackages = [ pkgs.xterm ];
+
+    # Enable the GNOME Desktop Environment.
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+    };
+    # gnome
+    gnome = {
+      tracker-miners.enable = false;
+    };
+    # disable cups printing
+    printing.enable = false;
+    # avahi
+    avahi.enable = true;
+
+
+  # Enable the KDE Plasma Desktop Environment.
+  #services.xserver.displayManager.sddm.enable = true;
+  #services.xserver.desktopManager.plasma5.enable = true;
 
   services.acpid.enable = true;
   services.mbpfan.enable = true;
@@ -81,8 +99,6 @@
 
   # Configure console keymap
   console.keyMap = "us";
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
