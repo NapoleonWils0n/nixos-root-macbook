@@ -1,3 +1,7 @@
+# Edit this configuration file to define what should be installed on
+# your system.  Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running ‘nixos-help’).
+
 { config, pkgs, ... }:
 
 {
@@ -24,37 +28,19 @@
   };
 
   # Bootloader.
-  boot = {
-  loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-    efi.efiSysMountPoint = "/boot/efi";
-    };
-    cleanTmpDir = true;
-    # Setup keyfile
-    initrd = {
-    secrets = {
-      "/crypto_keyfile.bin" = null;
-      };
-    # Enable swap on luks
-    luks.devices = {
-      "luks-cbf2570f-8c18-416f-a4a2-f541a398325b".device = "/dev/disk/by-uuid/cbf2570f-8c18-416f-a4a2-f541a398325b";
-      "luks-cbf2570f-8c18-416f-a4a2-f541a398325b".keyFile = "/crypto_keyfile.bin";
-      };
-    };
-  };
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking
-  networking = {
-    hostName = "castor"; # Define your hostname
-    networkmanager.enable = true;
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 6881 ];
-      allowedUDPPorts = [ 6882 ];
-    };
-  };
+  boot.initrd.luks.devices."luks-309d2938-70b6-4007-8047-d23cfcff5f0d".device = "/dev/disk/by-uuid/309d2938-70b6-4007-8047-d23cfcff5f0d";
+  networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
+  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/London";
@@ -74,124 +60,29 @@
     LC_TIME = "en_GB.UTF-8";
   };
 
-  # services
-  services = {
-    xserver = {
-    # Enable the X11 windowing system.
-    enable = true;
-    layout = "gb";
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+
+  # Enable the KDE Plasma Desktop Environment.
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
+
+  # Configure keymap in X11
+  services.xserver = {
     xkbVariant = "mac";
-
-    # intel
+    xkbOptions = "custom:alt_win_ctrl";
+    layout = "gb";
     videoDrivers = [ "intel" ];
+ };
 
-    # exclude xterm
-    excludePackages = [ pkgs.xterm ];
-
-    # Enable the GNOME Desktop Environment.
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    };
-    # gnome
-    gnome = {
-      tracker-miners.enable = false;
-    };
-    # disable cups printing
-    printing.enable = false;
-    # avahi
-    avahi.enable = true;
-    # mac
-    acpid.enable = true;
-    mbpfan.enable = true;
-    # thermals
-    thermald.enable = true;
-    openssh.enable = true;
-    transmission = {
-      enable = true;
-      credentialsFile = "/var/lib/secrets/transmission/settings.json";
-      home = "/var/lib/transmission";
-      settings = {
-        alt-speed-enabled = false;
-        bind-address-ipv4 = "0.0.0.0";
-        blocklist-enabled = false;
-        dht-enabled = true;
-        download-dir = "/var/lib/transmission/Downloads";
-        download-queue-enabled = true;
-        download-queue-size = 5;
-        encryption = 1;
-        idle-seeding-limit = 30;
-        idle-seeding-limit-enabled = false;
-        incomplete-dir = "/var/lib/transmission/.incomplete";
-        incomplete-dir-enabled = true;
-        message-level = 2;
-        peer-id-ttl-hours = 6;
-        peer-limit-global = 200;
-        peer-limit-per-torrent = 50;
-        peer-port = 6881;
-        peer-port-random-high = 65535;
-        peer-port-random-low = 49152;
-        peer-port-random-on-start = false;
-        peer-socket-tos = "default";
-        pex-enabled = true;
-        port-forwarding-enabled = false;
-        preallocation = 1;
-        prefetch-enabled = true;
-        queue-stalled-enabled = true;
-        queue-stalled-minutes = 30;
-        ratio-limit = 0;
-        ratio-limit-enabled = true;
-        rename-partial-files = true;
-        rpc-authentication-required = true;
-        rpc-bind-address = "0.0.0.0";
-        rpc-enabled = true;
-        rpc-host-whitelist-enabled = true;
-        rpc-port = 9091;
-        rpc-url = "/transmission/";
-        rpc-whitelist = "127.0.0.1,::1";
-        scrape-paused-torrents-enabled = true;
-        seed-queue-enabled = false;
-        seed-queue-size = 10;
-        speed-limit-down = 100;
-        speed-limit-down-enabled = false;
-        speed-limit-up = 100;
-        speed-limit-up-enabled = true;
-        start-added-torrents = true;
-        trash-original-torrent-files = true;
-        watch-dir = "/var/lib/transmission/watch-dir";
-        watch-dir-enabled = true;
-        umask = 18;
-        };
-      };
-  };
-
-  # disable the transmission systemd service
-  systemd.services.transmission.wantedBy = pkgs.lib.mkForce [ ];
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # gnome remove packages
-environment.gnome.excludePackages = (with pkgs; [
-  gnome-photos
-  gnome-tour
-  gnome-text-editor
-]) ++ (with pkgs.gnome; [
-  cheese # webcam tool
-  gnome-calendar
-  gnome-contacts
-  gnome-clocks
-  gnome-music
-  gnome-maps
-  epiphany # web browser
-  geary # email reader
-  gnome-characters
-  gnome-weather
-  simple-scan
-  totem # video player
-]);
+  services.acpid.enable = true;
+  services.mbpfan.enable = true;
+  services.thermald.enable = true;
 
   # Configure console keymap
   console.keyMap = "us";
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -202,7 +93,16 @@ environment.gnome.excludePackages = (with pkgs; [
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
   };
+
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.djwilcox = {
@@ -213,7 +113,13 @@ environment.gnome.excludePackages = (with pkgs; [
     ];
   };
 
-  # programs
+  # Install firefox.
+  #programs.firefox.enable = true;
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+# programs
   programs = {
     zsh = {
       enable = true;
@@ -266,6 +172,9 @@ environment.gnome.excludePackages = (with pkgs; [
     '';
   };
   
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
   environment.systemPackages = with pkgs; [
   ];
 
@@ -277,11 +186,23 @@ environment.gnome.excludePackages = (with pkgs; [
   #   enableSSHSupport = true;
   # };
 
+  # List services that you want to enable:
+
+  # Enable the OpenSSH daemon.
+  # services.openssh.enable = true;
+
+  # Open ports in the firewall.
+  networking.firewall.allowedTCPPorts = [ 6881 ];
+  networking.firewall.allowedUDPPorts = [ 6882 ];
+  # Or disable the firewall altogether.
+  networking.firewall.enable = true;
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.11"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
+
 }
