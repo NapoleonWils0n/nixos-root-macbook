@@ -87,6 +87,7 @@
     printing.enable = false;
     # avahi
     avahi.enable = true;
+  };
 
 
   # Enable the KDE Plasma Desktop Environment.

@@ -116,6 +116,7 @@ emacs --batch -l org --eval '(org-babel-tangle-file "~/git/nixos/nixos-root-macb
     printing.enable = false;
     # avahi
     avahi.enable = true;
+  };
 
 
   # Enable the KDE Plasma Desktop Environment.
