@@ -23,16 +23,15 @@
   # Set your time zone.
   time.timeZone = "Europe/London";
 
-  # system auto upgrade
   system.autoUpgrade = {
-      enable = true;
-      dates = "daily";
-      allowReboot = false;
-      flake = "path:flake.nix";
-      flags = [
-        "--recreate-lock-file"
-        "--commit-lock-file"
-      ];
+    enable = true;
+    flake = inputs.self.outPath; # Points to the flake in the Nix store
+    flags = [
+      "--update-input" "nixpkgs" # Update the nixpkgs input (will show deprecation warning)
+      "-L" # Print build logs
+    ];
+    dates = "00:00"; # Example: Run at midnight
+    randomizedDelaySec = "45min"; # Add a random delay
   };
 
   # nix garbage collection
