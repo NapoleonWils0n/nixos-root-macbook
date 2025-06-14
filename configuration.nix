@@ -28,6 +28,11 @@
       enable = true;
       dates = "daily";
       allowReboot = false;
+      flake = "path:flake.nix";
+      flags = [
+        "--recreate-lock-file"
+        "--commit-lock-file"
+      ];
   };
 
   # nix garbage collection
@@ -239,3 +244,4 @@ security.doas = {
   system.stateVersion = "25.05"; # Did you read the comment?
 
 }
+
