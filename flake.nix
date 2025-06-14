@@ -8,7 +8,7 @@
 
   outputs = { self, nixpkgs,... }@inputs: {
     # Define a NixOS system configuration
-    # Replace 'macbook-air-2011' with your actual hostname
+    # host name set to castor
     nixosConfigurations.castor = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux"; # Specify the system architecture
       modules = [
