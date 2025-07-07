@@ -140,6 +140,9 @@
   users.users.djwilcox.shell = pkgs.zsh;
   security.sudo.enable = true;
 
+# rtkit for audio
+security.rtkit.enable = true;
+
 # doas
 security.doas = {
   enable = true;
