@@ -4,6 +4,28 @@
 
 { config, lib, pkgs, ... }:
 
+
+let
+  # 1. Define your customized dwl package
+  myCustomDwlPackage = (pkgs.dwl.override {
+    configH = ./dwl/config.h;
+  }).overrideAttrs (oldAttrs: {
+    patches = (oldAttrs.patches or []) ++ [
+      ./dwl/movestack.patch # Using the direct path for the patch
+    ];
+    # Add any necessary buildInputs if your config.h or patches require them
+    # For a bar, you might need fcft for font rendering.
+    buildInputs = oldAttrs.buildInputs or [] ++ [ pkgs.libdrm pkgs.fcft ];
+  });
+
+  # 2. Create a wrapper script that launches dwl with dwlb as the status bar
+  dwlWithDwlbWrapper = pkgs.writeScriptBin "dwl-with-dwlb" ''
+      #!/bin/sh
+      # launch your customized dwl with its arguments
+      exec ${lib.getExe myCustomDwlPackage} -s "${pkgs.dwlb}/bin/dwlb -font \"monospace:size=16\"" "$@"
+    '';
+in
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -62,19 +84,16 @@
   # nix flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   console.keyMap = "us";
   nixpkgs.config.allowUnfree = true;
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
+
+  # --- XDG Desktop Portal Configuration for Wayland ---
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true; # Recommended for better portal integration
+    wlr.enable = true;       # This is the crucial part for wlroots compositors
+  };
+
 
   # Enable the X11 windowing system.
   services = {
@@ -116,15 +135,6 @@
     };
 };
   
-
-  # Configure keymap in X11
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
-
-  # Enable CUPS to print documents.
-
-  # Enable sound.
-  # hardware.pulseaudio.enable = true;
-  # OR
 
   # Enable touchpad support (enabled default in most desktopManager).
 
@@ -186,7 +196,14 @@ security.doas = {
 
   # programs.firefox.enable = true;
   programs = {
-    zsh = {
+  # dwl
+  dwl = {
+    enable = true;
+    # Tell the dwl module to use our wrapper script as the dwl executable
+    package = dwlWithDwlbWrapper;
+  };
+
+  zsh = {
       enable = true;
       enableCompletion = true;
       syntaxHighlighting.enable = true;
@@ -203,8 +220,12 @@ security.doas = {
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  environment.systemPackages = with pkgs; lib.filter (p: ! (lib.hasAttr "providedSessions" p && p.providedSessions == [ "dwl" ])) [
+  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+
+  #dwl
+  dwlb 
+  xdg-desktop-portal-wlr
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -245,4 +266,3 @@ security.doas = {
   system.stateVersion = "25.05"; # Did you read the comment?
 
 }
-
