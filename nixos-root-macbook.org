@@ -108,6 +108,11 @@ in
   # Set your time zone.
   time.timeZone = "Europe/London";
 
+  # permitted insecure packages
+  nixpkgs.config.permittedInsecurePackages = [
+    "broadcom-sta-6.30.223.271-57-6.12.39"
+  ];
+
 #  system.autoUpgrade = {
 #    enable = true;
 #    flake = inputs.self.outPath; # Points to the flake in the Nix store
