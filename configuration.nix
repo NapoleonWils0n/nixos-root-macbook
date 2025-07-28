@@ -50,8 +50,8 @@ in
   #  "broadcom-sta-6.30.223.271-57-6.12.39"
   #];
 
-  nixpkgs.config.allowInsecurePredicate = {
-    pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
+  nixpkgs.config = {
+   allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
   };
 
 #  system.autoUpgrade = {
