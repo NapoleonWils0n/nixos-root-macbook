@@ -108,16 +108,7 @@ in
   # Set your time zone.
   time.timeZone = "Europe/London";
 
-  # permitted insecure packages
-  #nixpkgs.config.permittedInsecurePackages = [
-  #  "broadcom-sta-6.30.223.271-57-6.12.39"
-  #];
-
-  #nixpkgs.config = {
-  #  allowInsecurePredicate = pkg: builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
-  #};
-
-  # broadcom fix
+  # broadcom fix permitted insecure packages
   nixpkgs.config.allowInsecurePredicate = pkg:
     builtins.elem (lib.getName pkg) [
       "broadcom-sta" # aka “wl”
